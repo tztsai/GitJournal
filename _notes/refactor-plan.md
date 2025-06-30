@@ -1,8 +1,6 @@
-### **GitJournal Evolution: UI/UX Design Document**
-
 **1. Overview**
 
-This document outlines the UI/UX design for the next iteration of GitJournal. We aim to evolve the app from a powerful, developer-centric note-taking tool into a more versatile "second brain" for a broader audience. The core of GitJournal—markdown-first, Git-synced notes—will be preserved and enhanced with intelligent organization, reminders, and AI-powered knowledge discovery.
+We aim to evolve the app from a powerful, developer-centric note-taking tool into a more versatile "second brain" for a broader audience. The core of GitJournal—markdown-first, Git-synced notes—will be preserved and enhanced with intelligent organization, reminders, and AI-powered knowledge discovery.
 
 **2. Core Design Principles**
 
