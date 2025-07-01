@@ -379,8 +379,6 @@ class SettingsFolderViewType extends GjSetting {
       SettingsFolderViewType(Lk.widgetsFolderViewViewsStandard, "Standard");
   static const Journal =
       SettingsFolderViewType(Lk.widgetsFolderViewViewsJournal, "Journal");
-  static const Card =
-      SettingsFolderViewType(Lk.widgetsFolderViewViewsCard, "Card");
   static const Grid =
       SettingsFolderViewType(Lk.widgetsFolderViewViewsGrid, "Grid");
   static const Default = Standard;
@@ -390,7 +388,6 @@ class SettingsFolderViewType extends GjSetting {
   static const options = <SettingsFolderViewType>[
     Standard,
     Journal,
-    Card,
     Grid,
   ];
 
@@ -409,8 +406,6 @@ class SettingsFolderViewType extends GjSetting {
         return FolderViewType.Standard;
       case Journal:
         return FolderViewType.Journal;
-      case Card:
-        return FolderViewType.Card;
       case Grid:
         return FolderViewType.Grid;
     }
@@ -424,8 +419,6 @@ class SettingsFolderViewType extends GjSetting {
         return SettingsFolderViewType.Standard;
       case FolderViewType.Journal:
         return SettingsFolderViewType.Journal;
-      case FolderViewType.Card:
-        return SettingsFolderViewType.Card;
       case FolderViewType.Grid:
         return SettingsFolderViewType.Grid;
     }

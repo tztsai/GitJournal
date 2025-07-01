@@ -39,12 +39,6 @@ class FolderViewSelectionDialog extends StatelessWidget {
         groupValue: viewType,
         onChanged: onViewChange,
       ),
-      RadioListTile<FolderViewType>(
-        title: Text(context.loc.widgetsFolderViewViewsCard),
-        value: FolderViewType.Card,
-        groupValue: viewType,
-        onChanged: onViewChange,
-      ),
       // RadioListTile<FolderViewType>(
       //   title: Text(context.loc.widgetsFolderViewViewsCalendar),
       //   value: FolderViewType.Calendar,
