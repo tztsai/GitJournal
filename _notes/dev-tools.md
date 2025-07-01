@@ -1,0 +1,4 @@
+- CodeMagic: automates building, testing, and publishing Flutter apps
+- Fastlane: automates building and deployment
+- Posthog: open-source product analytics
+- Resend: email delivery

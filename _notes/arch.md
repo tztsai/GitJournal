@@ -1,0 +1,88 @@
+## **High-Level Overview**
+
+GitJournal is a cross-platform note-taking application built with Flutter. Its core feature is the use of a Git repository as the backing store for notes, which allows for versioning, synchronization, and a decentralized workflow.
+
+The architecture is layered and modular, leveraging a hybrid state management approach to balance simplicity and scalability.
+
+---
+
+## **Core Concepts**
+
+1.  **Git as a Database**: Instead of a traditional database, all notes are stored as plain Markdown files within a local Git repository. This provides robust version history, conflict management, and allows users to interact with their notes using standard Git tools.
+
+2.  **Local-First with Cloud Sync**: The application is designed to be fully functional offline. All operations are performed against the local repository first. Synchronization with a remote Git provider (e.g., GitHub, GitLab) is an explicit step, ensuring data ownership and resilience.
+
+3.  **Hybrid State Management**: The app employs a pragmatic mix of state management patterns:
+    *   **Provider with ChangeNotifier**: This is the primary pattern for dependency injection and managing global, app-wide state. Key services like `RepositoryManager`, `Settings`, and `AppConfig` use `ChangeNotifier` to signal updates to the UI.
+    *   **BLoC (Business Logic Component)**: For features with complex, self-contained state and multiple events (e.g., the folder management screen), the BLoC pattern is used to isolate business logic from the UI.
+
+---
+
+## **Architectural Layers & Data Flow**
+
+The application is structured into three main layers: Presentation, Domain, and Data.
+
+### **1. Data Layer**
+
+This layer is responsible for data persistence and retrieval.
+
+*   **Git Repositories (`dart_git`, `go_git_dart`, `git` executable)**:
+    *   The app uses a hybrid Git implementation strategy.
+    *   **`dart_git`**: A pure-Dart implementation used for most local Git operations (e.g., commits, diffs).
+    *   **`go_git_dart`**: A wrapper around a Go-based Git library, used for network-intensive operations like `fetch` and `push` on mobile platforms (Android/iOS) due to its performance and robust SSH support.
+    *   **System `git`**: On desktop platforms (Linux/macOS), the app shells out to the system's `git` executable for network operations, leveraging the user's existing Git configuration.
+*   **Hive (`hive`)**: A lightweight and fast key-value database used for caching structured data, such as note metadata and link graphs, to speed up access.
+*   **SharedPreferences (`shared_preferences`)**: Used to store simple user preferences and settings.
+
+### **2. Domain (Business Logic) Layer**
+
+This layer contains the core business logic and application rules.
+
+*   **`RepositoryManager`**: A central class that manages the active `GitJournalRepo` instance and orchestrates high-level operations like initialization and repository switching.
+*   **`GitJournalRepo` (`repository.dart`)**: Wraps the underlying Git implementations, providing a unified API for all note and folder operations (e.g., `addNote`, `updateNote`, `sync`). It acts as the primary `ChangeNotifier` for UI updates related to repository state.
+*   **`NotesFolder` and Implementations**: A set of classes that model the folder structure and provide different views of the notes (e.g., `SortedNotesFolder`, `FilteredNotesFolder`, `FlattenedNotesFolder`). These also use `ChangeNotifier` to update the UI when the underlying note collection changes.
+*   **BLoCs (`flutter_bloc`)**: Self-contained components that manage the state of a specific feature. For example, `FolderListingBloc` handles all logic for creating, renaming, and deleting folders.
+
+### **3. Presentation (UI) Layer**
+
+This layer is responsible for displaying the UI and handling user input.
+
+*   **Widgets (`HomeScreen`, `FolderView`, etc.)**: The UI is composed of Flutter widgets. Views are generally reactive and rebuild in response to state changes from the Domain layer.
+*   **`AppRouter` (`app_router.dart`)**: A centralized router that manages navigation, ensuring a consistent way to move between screens and pass arguments.
+*   **`main.dart` & `app.dart`**: The application's entry points. `main.dart` handles platform-level initialization (error reporting, bindings), while `app.dart` sets up the root widget, initializes core services (`RepositoryManager`, `Analytics`), and builds the `MaterialApp`.
+
+### **Data Flow Summary**
+
+A typical user interaction follows this flow:
+
+1.  **User Action (UI)**: The user interacts with a widget (e.g., saves a note).
+2.  **ViewModel / BLoC**: The action is forwarded to a `GitJournalRepo` method or a BLoC event.
+3.  **Domain Logic**: The domain layer processes the action (e.g., writes the file to the filesystem, creates a Git commit).
+4.  **State Notification**: `ChangeNotifier.notifyListeners()` or a new BLoC state is emitted.
+5.  **UI Update**: Widgets listening to the `ChangeNotifier` or `BlocBuilder`s rebuild to reflect the new state.
+6.  **Sync (Optional)**: A separate sync action pushes the local Git commits to the remote repository.
+
+---
+
+## **Key Directories & Files**
+
+-   `lib/main.dart`: App entry point and initial setup.
+-   `lib/app.dart`: Root widget, `RepositoryManager` initialization, and `MaterialApp` configuration.
+-   `lib/repository.dart`: Defines `GitJournalRepo`, the core abstraction for all Git and note operations.
+-   `lib/core/git_repo.dart`: Contains the platform-specific Git implementation logic.
+-   `lib/core/folder/`: Contains the `NotesFolder` abstractions and implementations.
+-   `lib/screens/`: Contains the top-level screen widgets.
+-   `lib/folder_listing/`: A self-contained feature module implemented with BLoC.
+-   `lib/widgets/`: Contains reusable UI components.
+-   `lib/app_router.dart`: Centralized navigation logic.
+-   `pubspec.yaml`: Project dependencies and configuration.
+
+---
+
+## **Developer Guidelines**
+
+*   **For Global State**: Use Provider with a `ChangeNotifier` in one of the central services (e.g., `GitJournalRepo`, `Settings`).
+*   **For Feature-Specific State**: Create a dedicated BLoC and use `BlocProvider` to make it available to the feature's widget subtree. This is preferred for state that is complex and local to a single screen or flow.
+*   **Keep Views Dumb**: UI widgets should focus on rendering state and forwarding user events. Business logic belongs in the `GitJournalRepo`, `NotesFolder`s, or BLoCs.
+*   **Embrace Immutability**: When updating state, prefer creating new objects rather than modifying existing ones, especially in BLoC state objects.
+*   **Follow Existing Patterns**: Maintain consistency with the established hybrid Provider/BLoC architecture.
