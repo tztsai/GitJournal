@@ -1,5 +1,6 @@
 {
   "cmake.configureOnOpen": false,
+  "dart.flutterHotReloadOnSave": "all",
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },

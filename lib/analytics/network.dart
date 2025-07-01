@@ -14,8 +14,8 @@ const _analyticsUrl = "https://analytics-wetu2tkdpq-ew.a.run.app/v1/sendData";
 
 final dio = () {
   var d = Dio();
-  d.options.connectTimeout = 10000; // 10 sec
-  d.options.receiveTimeout = 10000;
+  d.options.connectTimeout = const Duration(seconds: 10); // 10 sec
+  d.options.receiveTimeout = const Duration(seconds: 10);
 
   d.interceptors.add(RetryInterceptor(
     dio: d,

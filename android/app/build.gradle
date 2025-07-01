@@ -25,10 +25,6 @@ android {
     namespace 'io.gitjournal.gitjournal'
     compileSdkVersion flutter.compileSdkVersion
 
-    lintOptions {
-        disable 'InvalidPackage'
-        checkReleaseBuilds false
-    }
 
     defaultConfig {
         applicationId "io.gitjournal.gitjournal"
@@ -72,11 +68,9 @@ android {
             }
         }
     }
-
-    dexOptions {
-        preDexLibraries true
-        jumboMode true
-        javaMaxHeapSize "12g"
+    lint {
+        checkReleaseBuilds false
+        disable 'InvalidPackage'
     }
 }
 

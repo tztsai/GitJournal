@@ -97,27 +97,27 @@ class OrgTextController extends TextEditingController {
           var newStyle = style;
           if (p.style == OrgStyle.bold) {
             newStyle = style.copyWith(fontWeight: FontWeight.bold);
-            children.add(TextSpan(text: '*${p.content}*', style: newStyle));
+            children.add(TextSpan(text: '*${p.content.toString()}*', style: newStyle));
             return true;
           } else if (p.style == OrgStyle.italic) {
             newStyle = style.copyWith(fontStyle: FontStyle.italic);
-            children.add(TextSpan(text: '/${p.content}/', style: newStyle));
+            children.add(TextSpan(text: '/${p.content.toString()}/', style: newStyle));
             return true;
           } else if (p.style == OrgStyle.strikeThrough) {
             newStyle = style.copyWith(decoration: TextDecoration.lineThrough);
-            children.add(TextSpan(text: '+${p.content}+', style: newStyle));
+            children.add(TextSpan(text: '+${p.content.toString()}+', style: newStyle));
             return true;
           } else if (p.style == OrgStyle.underline) {
             newStyle = style.copyWith(decoration: TextDecoration.underline);
-            children.add(TextSpan(text: '_${p.content}_', style: newStyle));
+            children.add(TextSpan(text: '_${p.content.toString()}_', style: newStyle));
             return true;
           }
 
-          children.add(TextSpan(text: p.content, style: style));
+          children.add(TextSpan(text: p.content.toString(), style: style));
           return true;
         }
         if (p is OrgPlainText) {
-          children.add(TextSpan(text: p.content, style: style));
+          children.add(TextSpan(text: p.content.toString(), style: style));
           return true;
         }
 
